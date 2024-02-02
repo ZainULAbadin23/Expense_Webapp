@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content_style %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"/>
+{% endblock content_style %}
+
+
+{% block content %}
+<div class="container">
+  <div class="row mt-4">
+    <div class="col-md-10">
+      <nav class="navbar bg-light px-3" aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="#">Expenses</a></li>
+         <li class="breadcrumb-item active" aria-current="page">My Expenses</li>
+       </ol>
+     </nav>
+   </div>
+   <div class="col-md-2">
+ 
+     <a class="btn btn-primary" href="{% url 'expenses:add_expense' %}">Add Expense</a>
+   </div>
+  </div>
+  <div class="container">
+    {% include 'partials/messages.html' %}
+    {% if expenses.count %}
+    <div class="row my-4">
+      <div class="col-md-8"></div>
+      <div class="col-md-4">
+        <a class="btn btn-info" href="{% url 'expenses:export-excel' %}">Export Excel</a>
+        <a class="btn btn-info" href="{% url 'expenses:export-csv' %}">Export CSV</a>
+        <a class="btn btn-info" href="#">Export Pdf</a>
+      </div>
+    </div>
+   <div class="app-table">
+    <table class="table table-striped table-hover display" id="example" style="width:100%">
+      <thead>
+       <tr>
+         <th>Amount ({{currency}})</th>
+         <th>Description</th>
+         <th>Category</th>
+         <th>Date</th>
+         <th>Edit</th>
+       </tr>
+      </thead>
+      <tbody>
+        {% for expense in expenses  %}
+       <tr>
+         <td>{{expense.amount}}</td>
+         <td>{{expense.description}}</td>
+         <td>{{expense.category}}</td>
+         <td>{{expense.date}}</td>
+         <td>
+          <a
+            href="{% url 'expenses:expense_edit' expense.id  %}"
+            class="btn btn-info btn-sm"
+            >Edit</a
+          >
+        </td>
+       </tr>
+
+       {% endfor %}
+      </tbody>
+  
+    </table>
+   </div>
+   
+    {% endif %}
+  
+   </div>
+  </div>
+  
+  
+</div>
+{% endblock %}
+
+{% block content_script %}
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#example').DataTable( {
+    "lengthMenu": [[5,10,15,20, 25], [5,10,15,20, 25]]
+    } );
+    } );
+</script>
+{% endblock content_script %}
